@@ -1,0 +1,31 @@
+# Configuration of our docker
+version: "3"
+
+# Services
+services:
+  #name of service
+  app:
+    build:
+      context: . #current directory
+    ports:
+      - "8000:8000" #port to our host:8000
+    volumes:
+      - ./app:/app #map from our directory to docker container
+    command: >
+      sh -c "python manage.py wait_for_db &&
+              python manage.py migrate &&
+              python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=password
+    depends_on:
+      - db
+
+  db:
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
