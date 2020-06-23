@@ -58,3 +58,19 @@ class ModelTests(TestCase):
             price=99.99,
         )
         self.assertEqual(str(product), product.name)
+
+    def test_store_str(self):
+        """Test store """
+        address = models.Address.objects.create(
+            user=sample_user(),
+            address="Block 2, Lot 13, Phase 3, Ashton Fields South",
+            city="Calamba City",
+            latitude=14.204780,
+            longitude=121.154716,
+        )
+        owner = get_user_model().objects.create_user("romeo@store.com", "jinja123")
+        store = models.Store.objects.create(
+            user=owner, address=address, name="Pasabuy SNR and Landers"
+        )
+
+        self.assertEqual(str(store), store.name)

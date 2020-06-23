@@ -69,3 +69,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Store(models.Model):
+    """ Store attributes"""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    address = models.OneToOneField(Address, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
