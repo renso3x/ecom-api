@@ -87,3 +87,19 @@ class PrivateAddressApiTest(TestCase):
 
         self.assertEqual(address.count(), 1)
         self.assertIn(address1, address)
+
+    def test_update_store_success(self):
+        """Test updating a recipe with patch"""
+        store = sample_store(user=self.user)
+        store.address.add(sample_address(user=self.user))
+
+        payload = {
+            'name': 'PasaBuy',
+        }
+
+        url = detail_url(store.id)
+        self.client.patch(url, payload)
+
+        store.refresh_from_db()
+
+        self.assertEqual(store.name, payload['name'])
