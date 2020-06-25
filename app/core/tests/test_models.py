@@ -67,3 +67,12 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(store), store.name)
+
+
+    def test_category_str(self):
+        """ Test Category"""
+        category = models.Category.objects.create(
+            name="Food & Drinks"
+        )
+
+        self.assertEqual(str(category.name), category.name)

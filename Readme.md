@@ -25,7 +25,7 @@
 - Category
   - name
 
-- Store
+- Store - done
   - name
   - address(fk)
   - user(fk) -> merchant of the store

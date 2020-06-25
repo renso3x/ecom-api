@@ -80,3 +80,11 @@ class Store(models.Model):
 
     def __str__(self):
         return self.name
+
+class Category(models.Model):
+    """ Category attributes"""
+
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
