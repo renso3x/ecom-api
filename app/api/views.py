@@ -4,7 +4,7 @@ from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Address, Store
+from core.models import Address, Store, Category
 from api import serializers
 
 
@@ -39,5 +39,20 @@ class AddressViewSet(BaseApiAttrViewSet):
 
 class StoreViewSet(BaseApiAttrViewSet):
     """ Manage store in the database"""
+
     queryset = Store.objects.all()
     serializer_class = serializers.StoreSerializer
+
+
+class CategoryViewSet(BaseApiAttrViewSet):
+    """Manage category in the database"""
+
+    queryset = Category.objects.all()
+    serializer_class = serializers.CategorySerializer
+
+    def get_queryset(self):
+        return self.queryset.filter()
+
+    def perform_create(self, serializer):
+        """create a new object"""
+        return serializer.save()

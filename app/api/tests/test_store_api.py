@@ -31,9 +31,9 @@ def sample_store(user, **params):
     return Store.objects.create(user=user, **defaults)
 
 
-def detail_url(address_id):
+def detail_url(store_id):
     """Return recipe detail URL"""
-    return reverse("api:store-detail", args=[address_id])
+    return reverse("api:store-detail", args=[store_id])
 
 
 class PublicAddressApiTest(TestCase):
@@ -65,7 +65,7 @@ class PrivateAddressApiTest(TestCase):
         sample_store(user=self.user)
 
         res = self.client.get(STORE_URL)
-        stores = Store.objects.all().order_by('-id')
+        stores = Store.objects.all().order_by("-id")
         serializer = StoreSerializer(stores, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -74,10 +74,7 @@ class PrivateAddressApiTest(TestCase):
     def test_create_store_success(self):
         """Test create store success"""
         address1 = sample_address(user=self.user)
-        payload = {
-            "name": "BuyKita store",
-            "address": [address1.id]
-        }
+        payload = {"name": "BuyKita store", "address": [address1.id]}
 
         res = self.client.post(STORE_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -94,7 +91,7 @@ class PrivateAddressApiTest(TestCase):
         store.address.add(sample_address(user=self.user))
 
         payload = {
-            'name': 'PasaBuy',
+            "name": "PasaBuy",
         }
 
         url = detail_url(store.id)
@@ -102,4 +99,12 @@ class PrivateAddressApiTest(TestCase):
 
         store.refresh_from_db()
 
-        self.assertEqual(store.name, payload['name'])
+        self.assertEqual(store.name, payload["name"])
+
+    def test_delete_store_success(self):
+        """Test delete a store"""
+        store = sample_store(user=self.user)
+        url = detail_url(store.id)
+        self.client.delete(url)
+
+        self.assertEqual(Store.objects.count(), 0)

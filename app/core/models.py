@@ -76,10 +76,11 @@ class Store(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    address = models.ManyToManyField('Address')
+    address = models.ManyToManyField("Address")
 
     def __str__(self):
         return self.name
+
 
 class Category(models.Model):
     """ Category attributes"""
