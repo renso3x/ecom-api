@@ -14,7 +14,7 @@
   - profile_image
   - user_type ('buyer', 'merchant')
 
-- Address
+- Address - Done
   - user(fk)
   - name
   - full address

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Address
+from core.models import Address, Store
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -16,3 +16,19 @@ class AddressSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("id",)
 
+
+class StoreSerializer(serializers.ModelSerializer):
+    """ Store Serializers"""
+    address = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Address.objects.all()
+    )
+
+    class Meta:
+        model = Store
+        fields = (
+            "id",
+            "name",
+            "address"
+        )
+        read_only_fields = ("id",)

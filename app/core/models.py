@@ -75,8 +75,8 @@ class Store(models.Model):
     """ Store attributes"""
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    address = models.OneToOneField(Address, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+    address = models.ManyToManyField('Address')
 
     def __str__(self):
         return self.name

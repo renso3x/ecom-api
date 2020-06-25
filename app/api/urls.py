@@ -5,6 +5,7 @@ from api import views
 
 router = DefaultRouter()
 router.register("address", views.AddressViewSet)
+router.register("store", views.StoreViewSet)
 
 app_name = "api"
 
