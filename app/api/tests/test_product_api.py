@@ -1,3 +1,8 @@
+import tempfile
+import os
+
+from PIL import Image
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.test import TestCase
@@ -12,6 +17,11 @@ from api.serializers import ProductSerializer
 PRODUCT_URL = reverse("api:product-list")
 
 
+def image_upload_url(product_id):
+    """Return URL for recipe image upload"""
+    return reverse("api:product-upload-image", args=[product_id])
+
+
 def sample_category(name="Toys"):
     return Category.objects.create(name=name)
 
@@ -20,12 +30,14 @@ def sample_store(user, name="Toy Kingdom MOA"):
     return Store.objects.create(user=user, name=name)
 
 
-def sample_product(user):
+def sample_product(user, **params):
     defaults = {
         "name": "Iron Man FunKo",
         "description": "A funko pop",
         "price": 200.00,
     }
+
+    defaults.update(params)
 
     return Product.objects.create(user=user, **defaults)
 
@@ -133,4 +145,59 @@ class PrivateProductApiTest(TestCase):
         self.client.delete(url)
 
         self.assertEqual(Product.objects.count(), 0)
+
+
+class ProductImageUploadTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user("user@user.com", "testUpass")
+        self.client.force_authenticate(self.user)
+        self.product = sample_product(user=self.user)
+
+    def tearDown(self):
+        self.product.image.delete()
+
+    def test_upload_image_to_product(self):
+        """Test uploading an email to product"""
+        url = image_upload_url(self.product.id)
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as ntf:
+            img = Image.new("RGB", (10, 10))
+            img.save(ntf, format="JPEG")
+            ntf.seek(0)
+            res = self.client.post(url, {"image": ntf}, format="multipart")
+
+        self.product.refresh_from_db()
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn("image", res.data)
+        self.assertTrue(os.path.exists(self.product.image.path))
+
+    def test_upload_image_bad_request(self):
+        """Test uploading an invalid image"""
+        url = image_upload_url(self.product.id)
+
+        res = self.client.post(url, {"image": "image"}, format="multipart")
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_filter_product_by_category(self):
+        """TEST RETURNING PRODUCT WITH SPECIFC category"""
+        p1 = sample_product(user=self.user, name="Electric fan")
+        p2 = sample_product(user=self.user, name="Dell monitor")
+
+        cat1 = sample_category(name="Electronics")
+        cat2 = sample_category(name="Computer")
+        p1.category.add(cat1)
+        p2.category.add(cat2)
+
+        p3 = sample_product(user=self.user, name="NY Hat")
+
+        res = self.client.get(PRODUCT_URL, {"categories": f"{cat1.id},{cat2.id}"})
+
+        serializer1 = ProductSerializer(p1)
+        serializer2 = ProductSerializer(p2)
+        serializer3 = ProductSerializer(p3)
+
+        self.assertIn(serializer1.data, res.data)
+        self.assertIn(serializer2.data, res.data)
+        self.assertNotIn(serializer3.data, res.data)
 

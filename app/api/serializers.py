@@ -44,7 +44,37 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     """Product serializer"""
 
+    category = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Category.objects.all()
+    )
+
     class Meta:
         model = Product
-        fields = ("id", "name", "description", "price", "store", "category")
+        fields = (
+            "id",
+            "name",
+            "description",
+            "price",
+            "store",
+            "category",
+            "image",
+        )
+        read_only_fields = ("id",)
+
+
+class ProductDetailSerializer(ProductSerializer):
+    """ Serializer for product detail"""
+
+    category = CategorySerializer(many=True, read_only=True)
+
+
+class ProductImageSerializer(ProductSerializer):
+    """Serializers for uploading images to product"""
+
+    class Meta:
+        model = Product
+        fields = (
+            "id",
+            "image",
+        )
         read_only_fields = ("id",)
