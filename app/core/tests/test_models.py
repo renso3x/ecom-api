@@ -8,6 +8,11 @@ def sample_user(email="test@refluens.com", password="testpass"):
     return get_user_model().objects.create_user(email, password)
 
 
+def sample_store(user, name="Sample Store"):
+    """ Create a sample store"""
+    return models.Store.objects.create(user=user, name=name)
+
+
 class ModelTests(TestCase):
     def test_create_user_with_email_successful(self):
         """Test create a new user with an email is successfull"""
@@ -57,22 +62,18 @@ class ModelTests(TestCase):
             description="Jet black variant Iphone7+",
             price=99.99,
         )
+
         self.assertEqual(str(product), product.name)
 
     def test_store_str(self):
         """Test store """
         owner = get_user_model().objects.create_user("romeo@store.com", "jinja123")
-        store = models.Store.objects.create(
-            user=owner, name="Pasabuy SNR and Landers"
-        )
+        store = models.Store.objects.create(user=owner, name="Pasabuy SNR and Landers")
 
         self.assertEqual(str(store), store.name)
 
-
     def test_category_str(self):
         """ Test Category"""
-        category = models.Category.objects.create(
-            name="Food & Drinks"
-        )
+        category = models.Category.objects.create(name="Food & Drinks")
 
         self.assertEqual(str(category.name), category.name)

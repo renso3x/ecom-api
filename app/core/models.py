@@ -59,18 +59,6 @@ class Address(models.Model):
         return self.address
 
 
-class Product(models.Model):
-    """ Product attributes"""
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
-
-    def __str__(self):
-        return self.name
-
-
 class Store(models.Model):
     """ Store attributes"""
 
@@ -86,6 +74,21 @@ class Category(models.Model):
     """ Category attributes"""
 
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class Product(models.Model):
+    """ Product attributes"""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    category = models.ManyToManyField("Category")
+    store = models.ForeignKey("Store", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name

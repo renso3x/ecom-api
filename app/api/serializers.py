@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Address, Store, Category
+from core.models import Address, Store, Category, Product
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -40,3 +40,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
         read_only_fields = ("id",)
 
+
+class ProductSerializer(serializers.ModelSerializer):
+    """Product serializer"""
+
+    class Meta:
+        model = Product
+        fields = ("id", "name", "description", "price", "store", "category")
+        read_only_fields = ("id",)

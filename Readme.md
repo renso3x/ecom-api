@@ -5,7 +5,7 @@
 
  ## Database
 
-- User
+- User - Done
   - first name
   - last name
   - email
@@ -22,7 +22,7 @@
   - latitude
   - longitude
 
-- Category
+- Category - Done
   - name
 
 - Store - done

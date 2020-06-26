@@ -4,7 +4,7 @@ from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Address, Store, Category
+from core.models import Address, Store, Category, Product
 from api import serializers
 
 
@@ -56,3 +56,11 @@ class CategoryViewSet(BaseApiAttrViewSet):
     def perform_create(self, serializer):
         """create a new object"""
         return serializer.save()
+
+
+class ProductViewSet(BaseApiAttrViewSet):
+    """ Manage Product in the database """
+
+    queryset = Product.objects.all()
+    serializer_class = serializers.ProductSerializer
+
