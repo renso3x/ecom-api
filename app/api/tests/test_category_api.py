@@ -17,22 +17,7 @@ def detail_url(category_id):
     return reverse("api:category-detail", args=[category_id])
 
 
-class PublicAddressApiTest(TestCase):
-    """Test the public available ingredients API"""
-
-    def setUp(self):
-        self.client = APIClient()
-
-    def test_login_required(self):
-        """Test that login is required to access the endpoint"""
-        res = self.client.get(CATEGORY_URL)
-
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
-
-
-class PrivateAddressApiTest(TestCase):
-    """Test Address  can be retrieve by authorized user"""
-
+class CategoryApiTest(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(

@@ -8,6 +8,8 @@ router.register("address", views.AddressViewSet)
 router.register("store", views.StoreViewSet)
 router.register("category", views.CategoryViewSet)
 router.register("product", views.ProductViewSet)
+router.register("order", views.OrderViewSet)
+router.register("invoice", views.InvoiceViewSet)
 
 app_name = "api"
 

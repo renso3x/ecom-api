@@ -1,10 +1,11 @@
+from django.db.models import Q
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Address, Store, Category, Product
+from core.models import Address, Store, Category, Product, Order, Invoice
 from api import serializers
 
 
@@ -44,7 +45,14 @@ class StoreViewSet(BaseApiAttrViewSet):
     serializer_class = serializers.StoreSerializer
 
 
-class CategoryViewSet(BaseApiAttrViewSet):
+class CategoryViewSet(
+    viewsets.GenericViewSet,
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+):
     """Manage category in the database"""
 
     queryset = Category.objects.all()
@@ -99,3 +107,27 @@ class ProductViewSet(BaseApiAttrViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OrderViewSet(BaseApiAttrViewSet):
+    """ Manage Order in the database """
+
+    queryset = Order.objects.all()
+    serializer_class = serializers.OrderSerializer
+
+
+class InvoiceViewSet(BaseApiAttrViewSet):
+    """Manage Invoice in the database """
+
+    queryset = Invoice.objects.all()
+    serializer_class = serializers.InvoiceSerializer
+
+    def get_queryset(self):
+        """Retrieve the recipes for the auth user"""
+        status = self.request.query_params.get("status")
+        queryset = self.queryset
+
+        if status:
+            queryset = queryset.filter(status__icontains=status)
+
+        return queryset.filter(user=self.request.user)

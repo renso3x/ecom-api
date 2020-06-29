@@ -30,21 +30,21 @@
   - address(fk)
   - user(fk) -> merchant of the store
 
-- Product
+- Product - Done
   - category(fk)
   - store(fk)
   - name
   - description
   - price -> estimated price
   - image
-  - other details
 
-- Order Item
+- Order Item - Done
   - product(fk)
   - user(fk)
   - quantity (5)
   - estimated total price(5 * product.price)
 
+* From Order Table if final
 - Invoice
   - order(fk)
   - status('issued', 'picked up', 'completed', 'cancelled')

@@ -77,7 +77,7 @@ class ModelTests(TestCase):
         """ Test Category"""
         category = models.Category.objects.create(name="Food & Drinks")
 
-        self.assertEqual(str(category.name), category.name)
+        self.assertEqual(str(category), category.name)
 
     @patch("uuid.uuid4")
     def test_product_file_name_uuid(self, mock_uuid):
@@ -88,3 +88,37 @@ class ModelTests(TestCase):
 
         exp_path = f"uploads/products/{uuid}.jpg"
         self.assertEqual(file_path, exp_path)
+
+    def test_order(self):
+        """Test Order Model"""
+        product = models.Product.objects.create(
+            user=sample_user(),
+            name="Iphone 7 Plus",
+            description="Jet black variant Iphone7+",
+            price=99.99,
+        )
+        buyer = get_user_model().objects.create_user("romeo@store.com", "jinja123")
+        order = models.Order.objects.create(
+            user=buyer, product=product, quantity=3, estimated_price=450.00,
+        )
+
+        exists = models.Order.objects.filter(id=order.id).exists()
+
+        self.assertTrue(exists)
+
+    def test_invoice(self):
+        """Test Invoice model"""
+        product = models.Product.objects.create(
+            user=sample_user(),
+            name="Iphone 7 Plus",
+            description="Jet black variant Iphone7+",
+            price=99.99,
+        )
+        buyer = get_user_model().objects.create_user("romeo@store.com", "jinja123")
+        invoice = models.Invoice.objects.create(
+            user=buyer, product=product, status="ISSUED", quantity=3, price=450.00,
+        )
+
+        exists = models.Invoice.objects.filter(id=invoice.id).exists()
+
+        self.assertTrue(exists)

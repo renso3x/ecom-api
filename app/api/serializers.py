@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Address, Store, Category, Product
+from core.models import Address, Store, Category, Product, Order, Invoice
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -78,3 +78,29 @@ class ProductImageSerializer(ProductSerializer):
             "image",
         )
         read_only_fields = ("id",)
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    """ Serializer for orders """
+
+    class Meta:
+        model = Order
+        fields = ("id", "product", "quantity", "estimated_price")
+        read_only_fields = ("id",)
+
+
+class InvoiceSerializer(serializers.ModelSerializer):
+    """Serializer for Invoice"""
+
+    class Meta:
+        model = Invoice
+        fields = (
+            "id",
+            "product",
+            "quantity",
+            "price",
+            "status",
+            "date_issued",
+        )
+        read_only_fields = ("id",)
+

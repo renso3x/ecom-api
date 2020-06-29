@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 import uuid
 import os
 from django.db import models
@@ -103,3 +104,47 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Order(models.Model):
+    """Order attributes"""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey("Product", on_delete=models.CASCADE, null=True)
+    quantity = models.IntegerField()
+    estimated_price = models.DecimalField(max_digits=6, decimal_places=2)
+
+
+class Invoice(models.Model):
+    """Invoice attributes"""
+
+    product = models.ForeignKey("Product", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    class Status(models.TextChoices):
+        ISSUED = (
+            "ISSUED",
+            "Issued",
+        )
+        PICKED_UP = (
+            "PICKED_UP",
+            "Pick-Up",
+        )
+        COMPLETED = (
+            "COMPLETED",
+            "Completed",
+        )
+        CANCELLED = "CANCELLED", "Cancelled"
+
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.ISSUED
+    )
+    date_issued = models.DateTimeField(
+        _(""), auto_now=False, auto_now_add=True, null=True
+    )
+    quantity = models.IntegerField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def __str__(self):
+        return self
+
