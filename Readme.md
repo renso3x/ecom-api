@@ -38,14 +38,8 @@
   - price -> estimated price
   - image
 
-- Order Item - Done
-  - product(fk)
-  - user(fk)
-  - quantity (5)
-  - estimated total price(5 * product.price)
-
 * From Order Table if final
-- Invoice
+- Invoice - Done
   - order(fk)
   - status('issued', 'picked up', 'completed', 'cancelled')
   - price -> if the status is picked up this shows the actual price of the order item
