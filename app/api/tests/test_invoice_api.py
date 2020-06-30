@@ -169,3 +169,6 @@ class PrivateInvoiceApiTest(TestCase):
         self.assertIn(s2.data, res.data)
         self.assertNotIn(s3.data, res.data)
 
+    def test_invoice_transaction_create(self):
+        """Test create transaction if invoice is completed"""
+

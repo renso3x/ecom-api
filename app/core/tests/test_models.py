@@ -122,3 +122,24 @@ class ModelTests(TestCase):
         exists = models.Invoice.objects.filter(id=invoice.id).exists()
 
         self.assertTrue(exists)
+
+    def test_transaction_invoice_completed(self):
+        """Test Transaction model"""
+        seller = sample_user()
+        product = models.Product.objects.create(
+            user=seller,
+            name="Iphone 7 Plus",
+            description="Jet black variant Iphone7+",
+            price=99.99,
+        )
+        buyer = get_user_model().objects.create_user("romeo@store.com", "jinja123")
+        invoice = models.Invoice.objects.create(
+            user=buyer, product=product, status="ISSUED", quantity=3, price=450.00,
+        )
+
+        transaction = models.Transaction.objects.create(user=seller, invoice=invoice)
+
+        exists = models.Transaction.objects.filter(id=transaction.id).exists()
+
+        self.assertTrue(exists)
+

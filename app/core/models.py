@@ -148,3 +148,12 @@ class Invoice(models.Model):
     def __str__(self):
         return self
 
+
+class Transaction(models.Model):
+    """Transaction attributes"""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    invoice = models.ForeignKey("Invoice", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self
