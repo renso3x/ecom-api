@@ -10,6 +10,7 @@ router.register("category", views.CategoryViewSet)
 router.register("product", views.ProductViewSet)
 router.register("order", views.OrderViewSet)
 router.register("invoice", views.InvoiceViewSet)
+router.register("transaction", views.TransactionViewSet)
 
 app_name = "api"
 

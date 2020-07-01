@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from core.models import Address, Store, Category, Product, Order, Invoice
+from core.models import Address, Store, Category, Product, Order, Invoice, Transaction
+
+from user.serializers import UserSerializer
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -58,8 +60,9 @@ class ProductSerializer(serializers.ModelSerializer):
             "store",
             "category",
             "image",
+            "user",
         )
-        read_only_fields = ("id",)
+        read_only_fields = ("id", "user")
 
 
 class ProductDetailSerializer(ProductSerializer):
@@ -104,3 +107,17 @@ class InvoiceSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("id",)
 
+
+class TransactionSerializer(serializers.ModelSerializer):
+    """Serializer for Transaction"""
+
+    invoice = InvoiceSerializer()
+
+    class Meta:
+        model = Transaction
+        fields = (
+            "id",
+            "invoice",
+        )
+
+        read_only_fields = ("id",)

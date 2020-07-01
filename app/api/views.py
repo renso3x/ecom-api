@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import get_user_model
 
-from core.models import Address, Store, Category, Product, Order, Invoice
+from core.models import Address, Store, Category, Product, Order, Invoice, Transaction
 from api import serializers
 
 
@@ -131,3 +132,18 @@ class InvoiceViewSet(BaseApiAttrViewSet):
             queryset = queryset.filter(status__icontains=status)
 
         return queryset.filter(user=self.request.user)
+
+    def perform_update(self, serializer):
+        """Create a Transaction"""
+        if self.request.data.get("status") == "COMPLETED":
+            invoice = serializer.save()
+            product = Product.objects.get(pk=self.request.data.get("product"))
+            owner = get_user_model().objects.get(pk=product.user.id)
+            Transaction.objects.create(user=owner, invoice=invoice)
+
+
+class TransactionViewSet(BaseApiAttrViewSet):
+    """ Manage Transaction in the database"""
+
+    queryset = Transaction.objects.all()
+    serializer_class = serializers.TransactionSerializer

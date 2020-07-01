@@ -107,11 +107,9 @@ class PrivateProductApiTest(TestCase):
             "category": [cat.id],
         }
 
-        self.client.post(PRODUCT_URL, payload)
+        res = self.client.post(PRODUCT_URL, payload)
 
-        exists = Product.objects.filter(user=self.user, name=payload["name"]).exists()
-
-        self.assertTrue(exists)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
 
     def test_product_view(self):
         """Test Product detail view """

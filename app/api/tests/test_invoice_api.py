@@ -5,7 +5,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Product, Invoice, Product
+from core.models import Product, Invoice, Product, Transaction
 
 from api.serializers import InvoiceSerializer
 
@@ -172,3 +172,23 @@ class PrivateInvoiceApiTest(TestCase):
     def test_invoice_transaction_create(self):
         """Test create transaction if invoice is completed"""
 
+        invoice = Invoice.objects.create(
+            user=self.user,
+            product=sample_product(self.user),
+            status="ISSUED",
+            quantity=2,
+            price=1500.00,
+        )
+
+        payload = {"status": "COMPLETED"}
+
+        url = detail_url(invoice.id)
+        self.client.patch(url, payload)
+
+        invoice.refresh_from_db()
+
+        Transaction.objects.create(user=self.user, invoice=invoice)
+
+        my_transactions = Transaction.objects.filter(user=self.user)
+
+        self.assertTrue(len(my_transactions), 1)
